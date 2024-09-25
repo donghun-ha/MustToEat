@@ -99,6 +99,11 @@ lib/generated_plugin_registrant.dart
 .AppleDouble
 .LSOverride
 
+# Xcode 관련 파일
+*.xcuserdatad
+*.xcworkspace
+*.lock
+
 # Icon must end with two \r
 Icon
 
