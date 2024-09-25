@@ -2,12 +2,14 @@
 author : 민철
 Description : 맛집리스트의 맛집 정보 조회, 추가, 수정, 삭제 (CRUD)
 Date : 2024.09.25
-Usage 조회: http://127.0.0.1:8000/must_eat/select?user_id=asd
-Usage 추가: http://127.0.0.1:8000/must_eat/insert?user_id=asd&name=%EC%98%86%EC%A7%91&address=%EC%A7%84%EC%A7%9C%EC%98%86%EC%A7%91&longtitude=34.1234&latitude=134.12415&image=imagepath.jpg&review=%EC%A7%91%EB%B0%A5%EB%8A%90%EB%82%8C&rank=5
-Usage 삭제: http://127.0.0.1:8000/must_eat/delete?seq=7
-Usage 이미지 추가: http://127.0.0.1:8000/must_eat/upload
-Usage 이미지 삭제: http://127.0.0.1:8000/must_eat/deleteFile/파일이름
-Usage 이미지 받기: http://127.0.0.1:8000/must_eat/view/파일이름
+Usage 리스트 조회     : http://127.0.0.1:8000/must_eat/select?user_id=asd
+Usage 리스트 추가     : http://127.0.0.1:8000/must_eat/insert?user_id=asd&name=%EC%98%86%EC%A7%91&address=%EC%A7%84%EC%A7%9C%EC%98%86%EC%A7%91&longtitude=34.1234&latitude=134.12415&image=imagepath.jpg&review=%EC%A7%91%EB%B0%A5%EB%8A%90%EB%82%8C&rank_point=5
+Usage 리스트 삭제     : http://127.0.0.1:8000/must_eat/delete?seq=7
+Usage 리스트 수정     : http://127.0.0.1:8000/must_eat/update?seq=8&user_id=asd&name=우리집&address=%EC%A7%84%EC%A7%9C%EC%98%86%EC%A7%91&longtitude=34.1234&latitude=134.12415&review=%EC%A7%91%EB%B0%A5%EB%8A%90%EB%82%8C&rank_point=5
+Usage 리스트 수정 전체 : http://127.0.0.1:8000/must_eat/updateAll?seq=8&user_id=asd&name=우리집&address=%EC%A7%84%EC%A7%9C%EC%98%86%EC%A7%91&longtitude=34.1234&latitude=134.12415&image=abcd.jpg&review=%EC%A7%91%EB%B0%A5%EB%8A%90%EB%82%8C&rank_point=5
+Usage 이미지 추가     : http://127.0.0.1:8000/must_eat/upload
+Usage 이미지 삭제     : http://127.0.0.1:8000/must_eat/deleteFile/파일이름
+Usage 이미지 받기     : http://127.0.0.1:8000/must_eat/view/파일이름
 """
 
 from fastapi import APIRouter, File, UploadFile
@@ -48,7 +50,7 @@ async def select(user_id: str=None):
 
 # 데이터 베이스에 데이터 추가 // 이미지 추가 : upload가 선행되어야함
 @router.get("/insert")
-async def insert(user_id: str=None, name: str=None, address: str=None, longtitude: str=None, latitude: str=None, image: str=None, review: str=None, rank: str=None):
+async def insert(user_id: str=None, name: str=None, address: str=None, longtitude: str=None, latitude: str=None, image: str=None, review: str=None, rank_point: str=None):
     conn = connect()
     curs = conn.cursor()
 
@@ -59,7 +61,7 @@ async def insert(user_id: str=None, name: str=None, address: str=None, longtitud
             VALUES 
                 (%s, %s, %s, %s, %s, %s, %s, %s)
         """
-        curs.execute(sql,(user_id, name, address, longtitude, latitude, image, review, rank))
+        curs.execute(sql,(user_id, name, address, longtitude, latitude, image, review, rank_point))
         conn.commit()
         conn.close()
         return {'result' : 'OK'}
@@ -95,7 +97,7 @@ async def delete_file(file_name: str):
 
 # 이미지제외 업데이트시 실행
 @router.get("/update")
-async def update(seq: str=None, user_id: str=None, name: str=None, address: str=None, longtitude: str=None, latitude: str=None, review: str=None, rank: str=None):
+async def update(seq: str=None, user_id: str=None, name: str=None, address: str=None, longtitude: str=None, latitude: str=None, review: str=None, rank_point: str=None):
     conn = connect()
     curs = conn.cursor()
 
@@ -110,11 +112,11 @@ async def update(seq: str=None, user_id: str=None, name: str=None, address: str=
                 longtitude = %s,
                 latitude= %s,
                 review = %s,
-                rank = %s
+                rank_point = %s
             WHERE
                 seq = %s
         """
-        curs.execute(sql,(user_id, name, address, longtitude, latitude, review, rank, seq))
+        curs.execute(sql,(user_id, name, address, longtitude, latitude, review, rank_point, seq))
         conn.commit()
         conn.close()
         return {'result' : 'OK'}
@@ -125,7 +127,7 @@ async def update(seq: str=None, user_id: str=None, name: str=None, address: str=
 
 # 이미지 포함 업데이트
 @router.get("/updateAll")
-async def updateAll(seq: str=None, user_id: str=None, name: str=None, address: str=None, longtitude: str=None, latitude: str=None, image: str=None, review: str=None, rank: str=None):
+async def updateAll(seq: str=None, user_id: str=None, name: str=None, address: str=None, longtitude: str=None, latitude: str=None, image: str=None, review: str=None, rank_point: str=None):
     conn = connect()
     curs = conn.cursor()
 
@@ -141,11 +143,11 @@ async def updateAll(seq: str=None, user_id: str=None, name: str=None, address: s
                 latitude= %s,
                 image = %s,
                 review = %s,
-                rank = %s
+                rank_point = %s
             WHERE
                 seq = %s
         """
-        curs.execute(sql,(user_id, name, address, longtitude, latitude, image, review, rank, seq))
+        curs.execute(sql,(user_id, name, address, longtitude, latitude, image, review, rank_point, seq))
         conn.commit()
         conn.close()
         return {'result' : 'OK'}
