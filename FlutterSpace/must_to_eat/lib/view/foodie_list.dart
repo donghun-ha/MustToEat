@@ -5,6 +5,7 @@ import 'add_list.dart';
 import 'edit_list.dart';
 import 'detail.dart';
 import 'package:get/get.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class FoodieList extends StatefulWidget {
   const FoodieList({super.key});
@@ -35,15 +36,10 @@ class _FoodieListState extends State<FoodieList> {
     setState(() {
       if (query.isEmpty) {
         getData();
-      } else {}
+      } else {
+        // Implement search functionality here
+      }
     });
-  }
-
-  void _deleteStore(int id) {
-    setState(() {
-      // stores.removeWhere((store) => store['id'] == id);
-    });
-    // 여기에 서버 삭제 로직 추가 예정
   }
 
   @override
@@ -136,9 +132,7 @@ class _FoodieListState extends State<FoodieList> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    // Get.to(() =>
-                                    //         Detail(storeData: stores[index]))
-                                    //     ?.then((_) => getData());
+                                    // Implement navigation to detail page
                                   },
                                   child: Image.network(
                                     'http://127.0.0.1:8000/must_eat/view/${stores[index].image}',
@@ -157,18 +151,21 @@ class _FoodieListState extends State<FoodieList> {
                                 ),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  'Rating: ${stores[index].rankPoint}',
-                                  style: const TextStyle(fontSize: 14),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: RatingBarIndicator(
+                                  rating: stores[index].rankPoint,
+                                  itemBuilder: (context, index) => Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  itemCount: 5,
+                                  itemSize: 20.0,
+                                  direction: Axis.horizontal,
                                 ),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  // Get.to(() =>
-                                  //         EditList(storeData: stores[index]))
-                                  //     ?.then((_) => getData());
+                                  // Implement navigation to edit page
                                 },
                                 child: const Text('Edit'),
                               ),
@@ -178,11 +175,11 @@ class _FoodieListState extends State<FoodieList> {
                             top: 0,
                             right: 0,
                             child: IconButton(
-                                icon:
-                                    const Icon(Icons.close, color: Colors.red),
-                                onPressed: () {}
-                                // => _deleteStore(stores[index]['id']),
-                                ),
+                              icon: const Icon(Icons.close, color: Colors.red),
+                              onPressed: () {
+                                // Implement delete functionality
+                              },
+                            ),
                           ),
                         ],
                       ),

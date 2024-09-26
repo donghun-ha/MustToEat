@@ -55,6 +55,8 @@ dependencies:
   # Get Storage
   get_storage: ^2.1.1
   
+  # 별점
+  flutter_rating_bar: ^4.0.1 
 
 dev_dependencies:
   flutter_test:
