@@ -54,6 +54,7 @@ dependencies:
   http: ^1.2.2
   # Get Storage
   get_storage: ^2.1.1
+  
 
 dev_dependencies:
   flutter_test:

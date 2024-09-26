@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:must_to_eat/vm/user_handler.dart';
 
 class UserEdit extends StatefulWidget {
   const UserEdit({super.key});
@@ -9,10 +11,23 @@ class UserEdit extends StatefulWidget {
 }
 
 class _UserEditState extends State<UserEdit> {
+  UserHandler handler = UserHandler();
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  final GetStorage box = GetStorage();
+  // Get Arguments
+  var value = Get.arguments ?? '___';
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = value[1];
+    phoneController.text = value[2];
+    addressController.text = value[3];
+    emailController.text = value[4];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +130,16 @@ class _UserEditState extends State<UserEdit> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
-        onPressed: () => _showDialog(),
+        onPressed: () async {
+          if (nameController.text.isNotEmpty &&
+              phoneController.text.isNotEmpty &&
+              addressController.text.isNotEmpty &&
+              emailController.text.isNotEmpty) {
+            _showDialog();
+          } else {
+            errorSnackBar();
+          }
+        },
         style: ElevatedButton.styleFrom(
           fixedSize: const Size(150, 0),
           backgroundColor: const Color(0xffFBB816),
@@ -142,7 +166,15 @@ class _UserEditState extends State<UserEdit> {
           child: const Text('아니오'),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            String id = GetStorage().read('must_user_id');
+            await handler.updateJSONData(
+              id,
+              nameController.text.trim(),
+              phoneController.text.trim(),
+              addressController.text.trim(),
+              emailController.text.trim(),
+            );
             Get.back();
             Get.back();
           },
@@ -150,5 +182,9 @@ class _UserEditState extends State<UserEdit> {
         ),
       ],
     );
+  }
+
+  errorSnackBar() {
+    print("Error");
   }
 }// End

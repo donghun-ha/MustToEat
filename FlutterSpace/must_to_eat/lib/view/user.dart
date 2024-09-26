@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:must_to_eat/view/user_edit.dart';
 import 'package:must_to_eat/view/user_password_edit.dart';
+import 'package:must_to_eat/vm/user_handler.dart';
 
 class User extends StatefulWidget {
   const User({super.key});
@@ -17,6 +18,8 @@ class _UserState extends State<User> {
   // Property
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
+  UserHandler handler = UserHandler();
+  List<dynamic> userData = [];
 
   Future<void> getImageFromGallery() async {
     final XFile? pickedFile =
@@ -29,23 +32,41 @@ class _UserState extends State<User> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    userData.clear();
+    List<dynamic> temp = await handler.selectJSONData();
+    userData.addAll(temp);
+    print(userData);
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _userAppBar(context),
       body: Stack(
         children: [
           _backgroundImage(),
-          Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _userImage(),
-                _userInformation(),
-                const SizedBox(height: 250),
-                _userSettings(),
-              ],
-            ),
-          )
+          userData.isEmpty
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _userImage(),
+                      _userInformation(),
+                      const SizedBox(height: 250),
+                      _userSettings(),
+                    ],
+                  ),
+                )
         ],
       ),
     );
@@ -133,12 +154,20 @@ class _UserState extends State<User> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Name :   이름',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Text(
+                    'Name :   ${userData[2]}',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
-                    onPressed: () => Get.to(const UserEdit()),
+                    onPressed: () => Get.to(() => const UserEdit(), arguments: [
+                      userData[0],
+                      userData[2],
+                      userData[3],
+                      userData[4],
+                      userData[5],
+                    ])!
+                        .then((value) => getData()),
                     child: const Text(
                       '회원정보 수정',
                       style: TextStyle(
@@ -148,35 +177,38 @@ class _UserState extends State<User> {
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
-                    'Phone :  010-2425-5340',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    'Phone :  ${userData[3]}',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
-                    'Address :   서울시 강남구',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    'Address :   ${userData[4]}',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
-                    'E-mail :   musttoeat@naver.com',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    'E-mail :   ${userData[5]}',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),

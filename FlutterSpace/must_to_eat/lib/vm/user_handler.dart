@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:must_to_eat/model/user.dart';
 
 class UserHandler {
   final String defaultUrl = "http://127.0.0.1:8000/user";
+  final GetStorage box = GetStorage();
 
   insertJSONData(User user) async {
     var url = Uri.parse(
@@ -27,12 +29,38 @@ class UserHandler {
     return result;
   }
 
-  idCheck(String id) async {
-    var url = Uri.parse('$defaultUrl/check_id?id=$id');
+  updateJSONData(String id, String name, String phone, String address,
+      String email) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/user/update?id=$id&name=$name&phone=$phone&address=$address&email=$email');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
-    var result = dataConvertedJSON['available'];
-    print(result);
+    var result = dataConvertedJSON['result'];
+    if (result == 'Cool') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  updatePWJSONData(String id, String password) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/user/updatePW?id=$id&password=$password');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+    if (result == 'Cool') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  selectJSONData() async {
+    var url = Uri.parse('$defaultUrl/select?id=${box.read('must_user_id')}');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
     return result;
   }
 }

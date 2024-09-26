@@ -88,13 +88,13 @@ async def check_id(id: str=None) :
 
     
 @router.get("/update")
-async def update(id: str=None, password: str=None, name: str=None, phone: str=None, address: str=None, email: str=None) :
+async def update(id: str=None, name: str=None, phone: str=None, address: str=None, email: str=None) :
     conn = connect()
     curs = conn.cursor()
 
     try :
-        sql = "update user set password=%s, name=%s, phone=%s, address=%s, email=%s where id=%s"
-        curs.execute(sql, (password, name, phone, address, email, id))
+        sql = "update user set name=%s, phone=%s, address=%s, email=%s where id=%s"
+        curs.execute(sql, (name, phone, address, email, id))
         conn.commit()
         conn.close()
         return {'result' : 'Cool'}
@@ -103,6 +103,22 @@ async def update(id: str=None, password: str=None, name: str=None, phone: str=No
         print("Error :", e)
         return {'result' : 'Noo'}
     
+@router.get("/updatePW")
+async def updatePW(id: str=None, password: str=None):
+    conn = connect()
+    curs = conn.cursor()
+
+    try:
+        sql = "update user set password=%s where id=%s"
+        curs.execute(sql,(password,id))
+        conn.commit()
+        conn.close()
+        return {'result' : 'Cool'}
+    except Exception as e : 
+        conn.close()
+        print("Error :", e)
+        return {'result' : 'Noo'}
+
 @router.get("/updateAll")
 async def updateAll(id: str=None, password: str=None, name: str=None, phone: str=None, address: str=None, email: str=None, image: str=None) :
     conn = connect()
@@ -137,7 +153,7 @@ async def select(id: str=None) :
 
     sql = 'select id, password, name, phone, address, email, image from user where id=%s'
     curs.execute(sql, (id))
-    rows = curs.fetchall()
+    rows = curs.fetchone()
     conn.close()
     print(rows)
 
