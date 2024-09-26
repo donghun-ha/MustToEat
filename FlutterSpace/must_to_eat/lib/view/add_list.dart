@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -20,12 +19,19 @@ class _AddListState extends State<AddList> {
   final GetStorage box = GetStorage();
 
   late TextEditingController nameController;
-  late TextEditingController phoneController;
   late TextEditingController addressController;
   late TextEditingController latitudeController;
   late TextEditingController longitudeController;
   late TextEditingController reviewController;
   late TextEditingController estimateController;
+
+  String? nameError;
+  String? addressError;
+  String? latError;
+  String? longError;
+  String? reviewError;
+  String? ratingError;
+
   double? latData;
   double? longData;
   Position? currentPosition;
@@ -36,7 +42,6 @@ class _AddListState extends State<AddList> {
   void initState() {
     super.initState();
     nameController = TextEditingController();
-    phoneController = TextEditingController();
     addressController = TextEditingController();
     latitudeController = TextEditingController();
     longitudeController = TextEditingController();
@@ -74,20 +79,6 @@ class _AddListState extends State<AddList> {
     }
   }
 
-  void addRestaurant() {
-    // 여기에 서버로 데이터를 보내는 로직을 구현할 예정
-    // 현재는 임시로 콘솔에 출력만 합니다.
-    print('Restaurant Name: ${nameController.text}');
-    print('Phone: ${phoneController.text}');
-    print('Latitude: ${latitudeController.text}');
-    print('Longitude: ${longitudeController.text}');
-    print('Rating: ${estimateController.text}');
-    print('Image Path: ${imageFile?.path}');
-
-    // 데이터 추가 후 이전 화면으로 돌아가기
-    Get.back();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,20 +114,18 @@ class _AddListState extends State<AddList> {
                   else
                     const Text('No image selected'),
                   const SizedBox(height: 16),
-                  buildTextField(
-                      'Name', nameController, 'Enter restaurant name'),
-                  buildTextField('Phone', phoneController, 'Enter phone number',
-                      TextInputType.phone),
+                  buildTextField('Name', nameController,
+                      'Enter restaurant name', nameError),
                   buildTextField('Address', addressController, 'Address',
-                      TextInputType.text),
+                      addressError, TextInputType.text),
                   buildTextField('Latitude', latitudeController, 'Latitude',
-                      TextInputType.number),
+                      latError, TextInputType.number),
                   buildTextField('Longitude', longitudeController, 'Longitude',
-                      TextInputType.number),
-                  buildTextField(
-                      'review', reviewController, 'review', TextInputType.text),
+                      longError, TextInputType.number),
+                  buildTextField('review', reviewController, 'review',
+                      reviewError, TextInputType.text),
                   buildTextField('Rating', estimateController,
-                      'Enter rating (0-5)', TextInputType.number),
+                      'Enter rating (0-5)', ratingError, TextInputType.number),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => insertAction(),
@@ -151,8 +140,8 @@ class _AddListState extends State<AddList> {
     );
   }
 
-  Widget buildTextField(
-      String label, TextEditingController controller, String hint,
+  Widget buildTextField(String label, TextEditingController controller,
+      String hint, String? error,
       [TextInputType? keyboardType]) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -160,10 +149,10 @@ class _AddListState extends State<AddList> {
         controller: controller,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          border: const OutlineInputBorder(),
-        ),
+            labelText: label,
+            hintText: hint,
+            border: const OutlineInputBorder(),
+            errorText: error),
       ),
     );
   }
@@ -171,22 +160,43 @@ class _AddListState extends State<AddList> {
   insertAction() async {
     // 이미지 올리기
     // filename이 필요하므로 filename을 얻기 전까지는 다음 단계를 멈춘다.
-    var result = await handler.uploadImage(imageFile!);
+    nameError = nameController.text.trim().isEmpty ? '맛집 이름을 입력해주세요' : null;
+    addressError = addressController.text.trim().isEmpty ? '주소를 입력해주세요' : null;
+    latError = latitudeController.text.trim().isEmpty ? '위도를 입력해주세요' : null;
+    longError = longitudeController.text.trim().isEmpty ? '경도를 입력해주세요' : null;
+    reviewError = reviewController.text.trim().isEmpty ? '리뷰를 입력해주세요' : null;
+    ratingError = estimateController.text.trim().isEmpty ? '점수를 입력해주세요' : null;
 
-    if (result != false) {
-      // address에 올리기
-      MustEat mustEat = MustEat(
-        userId: box.read('must_user_id'),
-        name: nameController.text.trim(),
-        address: addressController.text.trim(),
-        longtitude: double.parse(longitudeController.text.trim()),
-        latitude: double.parse(latitudeController.text.trim()),
-        review: reviewController.text.trim(),
-        rankPoint: double.parse(estimateController.text.trim()),
-        image: result,
-      );
-      await handler.insertJSONData(mustEat);
-      Get.back();
+    if (nameError != null ||
+        addressError != null ||
+        latError != null ||
+        longError != null ||
+        reviewError != null ||
+        ratingError != null) {
+      // 입력 실패
+      print('빈값 채워주세요');
+    } else {
+      String result = '';
+      if (imageFile == null) {
+        //
+        print('이미지 선택 알람');
+      } else {
+        var result = await handler.uploadImage(imageFile!);
+        // address에 올리기
+        MustEat mustEat = MustEat(
+          userId: box.read('must_user_id'),
+          name: nameController.text.trim(),
+          address: addressController.text.trim(),
+          longtitude: double.parse(longitudeController.text.trim()),
+          latitude: double.parse(latitudeController.text.trim()),
+          review: reviewController.text.trim(),
+          rankPoint: double.parse(estimateController.text.trim()),
+          image: result,
+        );
+        await handler.insertJSONData(mustEat);
+        Get.back();
+      }
     }
+    setState(() {});
   }
 }
