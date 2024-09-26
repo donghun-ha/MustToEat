@@ -50,7 +50,9 @@ class _FoodieListState extends State<FoodieList> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.to(const AddList()),
+        onPressed: () => Get.to(const AddList())!.then(
+          (value) => getData(),
+        ),
         backgroundColor: const Color(0xffFBB816),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -138,8 +140,8 @@ class _FoodieListState extends State<FoodieList> {
                                     //         Detail(storeData: stores[index]))
                                     //     ?.then((_) => getData());
                                   },
-                                  child: Image.asset(
-                                    'images/placeholder.png',
+                                  child: Image.network(
+                                    'http://127.0.0.1:8000/must_eat/view/${stores[index].image}',
                                     fit: BoxFit.cover,
                                   ),
                                 ),
