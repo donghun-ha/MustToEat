@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'foodie_list.dart';
 import 'package:must_to_eat/view/login.dart';
 
 class Splash extends StatefulWidget {
@@ -20,7 +19,7 @@ class _SplashState extends State<Splash> {
   // 3초 후에 메인 화면으로 이동
   void _navigateToHome() async {
     await Future.delayed(const Duration(seconds: 2));
-     Get.off(() => const FoodieList()); // Get.to 대신 Get.off 사용
+    Get.off(() => const Login()); // Get.to 대신 Get.off 사용
   }
 
   @override
