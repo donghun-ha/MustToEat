@@ -19,7 +19,7 @@ class _SplashState extends State<Splash> {
   // 3초 후에 메인 화면으로 이동
   void _navigateToHome() async {
     await Future.delayed(const Duration(seconds: 2));
-    Get.to(const Login());
+    Get.off(() => const Login()); // Get.to 대신 Get.off 사용
   }
 
   @override
