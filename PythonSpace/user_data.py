@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, APIRouter
+from fastapi import File, UploadFile, APIRouter
 from fastapi.responses import FileResponse
 import pymysql
 import os
@@ -39,6 +39,31 @@ async def insert(id: str=None, password: str=None, name: str=None, phone: str=No
         conn.close()
         print("Error :", e)
         return {'result' : 'Noo'}
+    
+@router.get("/login")
+async def login(id: str=None, password: str=None) :
+    conn = connect()
+    curs = conn.cursor()
+
+    try :
+        sql = "select Count(*) from user where id=%s and password=%s"
+        curs.execute(sql, (id, password))
+        user = curs.fetchone()
+        print(user)
+        conn.close()
+        print(user[0])
+
+        if user[0] == 1 :
+            return {"available" : True, "message" : "로그인 되었습니다."}
+        else :
+            return {"available" : False, "message" : "비밀번호가 일치하지 않습니다."}
+
+        
+    except Exception as e :
+        conn.close()
+        print("Error :", e)
+        return {'result' : 2, "message" : '로그인 처리 중 오류가 발생했습니다.'}
+        
     
 
 @router.get("/check_id")

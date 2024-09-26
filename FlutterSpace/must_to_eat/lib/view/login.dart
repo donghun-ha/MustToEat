@@ -4,8 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:must_to_eat/view/foodie_list.dart';
 import 'package:must_to_eat/view/sign_up.dart';
+import 'package:must_to_eat/vm/user_handler.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -18,6 +20,9 @@ class _LoginState extends State<Login> {
   // Property
   TextEditingController idController = TextEditingController();
   TextEditingController pwController = TextEditingController();
+  UserHandler handler = UserHandler();
+
+  final GetStorage box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -96,9 +101,16 @@ class _LoginState extends State<Login> {
             Padding(
               padding: const EdgeInsets.all(105.0),
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // 로그인 로직
-                  Get.to(const FoodieList());
+                  bool checkLogin = await handler.loginJSONData(idController.text.trim(), pwController.text.trim());
+                  if (checkLogin) {
+                    box.write('must_user_id', idController.text.trim());
+                    Get.to(const FoodieList());
+                  } else {
+                    // 로그인 실패 알람창
+                  }
+                  
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(150, 0),

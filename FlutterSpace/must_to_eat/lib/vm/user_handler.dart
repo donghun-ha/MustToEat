@@ -17,4 +17,18 @@ class UserHandler {
       return false;
     }
   }
+  
+  loginJSONData(String id, String password) async {
+    var url = Uri.parse(
+      '$defaultUrl/login?id=${id}&password=${password}'
+    );
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    print(dataConvertedJSON);
+    var result = dataConvertedJSON['available'];
+    return result;
+    
+
+  }
+
 }
