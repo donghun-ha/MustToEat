@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -113,9 +112,11 @@ class _EditListState extends State<EditList> {
   }
 
   Widget _buildImageWidget() {
-    if (imageFile != null) {
-      return Image.file(File(imageFile!.path));
-    } else if (value.image != null) {
+    print(value.image);
+    if (value.image != null) {
+      return Image.network(
+          'http://127.0.0.1:8000/must_eat/view/${value.image}');
+    } else if (imageFile != null) {
       return Image.asset('images/placeholder.png');
     } else {
       return const Text('No image selected');
@@ -242,15 +243,6 @@ class _EditListState extends State<EditList> {
   }
 
   Future updateList() async {
-    // 여기에 서버로 데이터를 보내는 로직을 구현할 예정
-    // 현재는 임시로 콘솔에 출력만 합니다.
-    // print('Updated Name: ${nameController.text}');
-    // print('Updated Phone: ${phoneController.text}');
-    // print('Updated Rating: ${estimateController.text}');
-    // print('Updated Latitude: ${latitudeController.text}');
-    // print('Updated Longitude: ${longitudeController.text}');
-    // print('Updated Image: ${imageFile?.path ?? "Not changed"}');
-
     _showDialog();
   }
 

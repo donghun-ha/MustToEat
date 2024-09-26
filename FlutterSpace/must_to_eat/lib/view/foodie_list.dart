@@ -141,9 +141,12 @@ class _FoodieListState extends State<FoodieList> {
                                             Detail(storeData: stores[index]))
                                         ?.then((_) => getData());
                                   },
-                                  child: Image.network(
-                                    'http://127.0.0.1:8000/must_eat/view/${stores[index].image}',
-                                    fit: BoxFit.cover,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      'http://127.0.0.1:8000/must_eat/view/${stores[index].image}',
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -187,7 +190,10 @@ class _FoodieListState extends State<FoodieList> {
                             top: 0,
                             right: 0,
                             child: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.red),
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.black,
+                              ),
                               onPressed: () => _deleteStore(stores[index].id),
                             ),
                           ),
