@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:must_to_eat/model/must_eat.dart';
+import 'package:must_to_eat/vm/list_handler.dart';
 
 class EditList extends StatefulWidget {
   const EditList({super.key});
@@ -13,46 +13,65 @@ class EditList extends StatefulWidget {
 }
 
 class _EditListState extends State<EditList> {
+  final ListHandler handler = ListHandler();
+  // final GetStorage box = GetStorage();
+
   late TextEditingController nameController;
-  late TextEditingController reviewController;
-  late TextEditingController estimateController;
+  late TextEditingController addressController;
   late TextEditingController latitudeController;
   late TextEditingController longitudeController;
+  late TextEditingController reviewController;
+  late TextEditingController estimateController;
 
-  MustEat value = Get.arguments ?? '__';
+  String? nameError;
+  String? addressError;
+  String? latError;
+  String? longError;
+  String? reviewError;
+  String? ratingError;
 
+  double? latData;
+  double? longData;
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
+  final MustEat value = Get.arguments ?? "__";
+
+  int firstDisp = 0;
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController(text: value.name);
-    reviewController = TextEditingController(text: value.review);
-    estimateController = TextEditingController(
-      text: value.rankPoint.toString(),
-    );
+    addressController = TextEditingController(text: value.address);
     latitudeController = TextEditingController(text: value.latitude.toString());
     longitudeController =
         TextEditingController(text: value.longtitude.toString());
+    reviewController = TextEditingController(text: value.review);
+    estimateController =
+        TextEditingController(text: value.rankPoint.toString());
+  }
+
+  Future<void> getImageFromGallery() async {
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      firstDisp += 1;
+      setState(() {
+        imageFile = pickedFile;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Edit',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: const Text('Edit Restaurant',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('images/back.png'),
-              fit: BoxFit.cover,
-            ),
+                image: AssetImage('images/back.png'), fit: BoxFit.cover),
           ),
         ),
       ),
@@ -60,51 +79,51 @@ class _EditListState extends State<EditList> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.asset(
-                'images/back.png',
-                fit: BoxFit.cover,
-              ),
+              child: Image.asset('images/back.png', fit: BoxFit.cover),
             ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: ElevatedButton(
-                    onPressed: () => getImageFromGallery(ImageSource.gallery),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xffFD4D05),
-                      foregroundColor: Colors.white,
-                      fixedSize: const Size(150, 0),
-                    ),
-                    child: const Text('Image'),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                    onPressed: getImageFromGallery,
+                    child: const Text('Select Image'),
                   ),
-                ),
-                SizedBox(
-                  width: 250,
-                  height: 200,
-                  child: Center(
-                    child: _buildImageWidget(),
+                  const SizedBox(height: 16),
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      child: firstDisp == 0
+                          ? Image.network(
+                              'http://127.0.0.1:8000/must_eat/view/${value.image}')
+                          : Image.file(File(imageFile!.path))),
+                  const SizedBox(height: 16),
+                  buildTextField('Name', nameController,
+                      'Enter restaurant name', nameError),
+                  buildTextField('Address', addressController, 'Address',
+                      addressError, TextInputType.text),
+                  buildTextField('Latitude', latitudeController, 'Latitude',
+                      latError, TextInputType.number),
+                  buildTextField('Longitude', longitudeController, 'Longitude',
+                      longError, TextInputType.number),
+                  buildTextField('review', reviewController, 'review',
+                      reviewError, TextInputType.text),
+                  buildTextField('Rating', estimateController,
+                      'Enter rating (0-5)', ratingError, TextInputType.number),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (firstDisp == 0) {
+                        updateAction();
+                      } else {
+                        updateActionAll();
+                      }
+                    },
+                    child: const Text('Add Restaurant'),
                   ),
-                ),
-                buildLocationFields(),
-                buildTextField('Name', nameController),
-                buildTextField('Review', reviewController, TextInputType.text),
-                buildRatingField('Rating', estimateController),
-                Padding(
-                  padding: const EdgeInsets.all(28.0),
-                  child: ElevatedButton(
-                    onPressed: updateList,
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(150, 0),
-                      backgroundColor: const Color(0xffFBB816),
-                    ),
-                    child: const Text(
-                      'Edit',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -112,163 +131,87 @@ class _EditListState extends State<EditList> {
     );
   }
 
-  Widget _buildImageWidget() {
-    if (imageFile != null) {
-      return Image.file(File(imageFile!.path));
-    } else if (value.image != null) {
-      return Image.asset('images/placeholder.png');
-    } else {
-      return const Text('No image selected');
-    }
-  }
-
   Widget buildTextField(String label, TextEditingController controller,
+      String hint, String? error,
       [TextInputType? keyboardType]) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '$label : ',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            width: 300,
-            child: TextField(
-              controller: controller,
-              keyboardType: keyboardType,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-          ),
-        ],
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+            labelText: label,
+            hintText: hint,
+            border: const OutlineInputBorder(),
+            errorText: error),
       ),
     );
   }
 
-  Widget buildRatingField(String label, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            '$label : ',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(
-            width: 300,
-            child: TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              maxLines: 4,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildLocationFields() {
-    return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Location :',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 135,
-              child: TextField(
-                controller: latitudeController,
-                decoration: const InputDecoration(
-                  hintText: '위도',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: 135,
-              child: TextField(
-                controller: longitudeController,
-                decoration: const InputDecoration(
-                  hintText: '경도',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future getImageFromGallery(ImageSource imageSource) async {
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        imageFile = XFile(pickedFile.path);
-      });
+  // 이미지 변경없음
+  updateAction() async {
+    bool check = checkData();
+    if (check) {
+      MustEat mustEat = MustEat(
+        seq: value.seq,
+        userId: value.userId,
+        name: nameController.text.trim(),
+        address: addressController.text.trim(),
+        longtitude: double.parse(longitudeController.text.trim()),
+        latitude: double.parse(latitudeController.text.trim()),
+        review: reviewController.text.trim(),
+        rankPoint: double.parse(estimateController.text.trim()),
+        image: value.image,
+      );
+      await handler.updateJSONData(mustEat);
+      Get.back();
     }
+    setState(() {});
   }
 
-  Future updateList() async {
-    // 여기에 서버로 데이터를 보내는 로직을 구현할 예정
-    // 현재는 임시로 콘솔에 출력만 합니다.
-    // print('Updated Name: ${nameController.text}');
-    // print('Updated Phone: ${phoneController.text}');
-    // print('Updated Rating: ${estimateController.text}');
-    // print('Updated Latitude: ${latitudeController.text}');
-    // print('Updated Longitude: ${longitudeController.text}');
-    // print('Updated Image: ${imageFile?.path ?? "Not changed"}');
-
-    _showDialog();
+  updateActionAll() async {
+    print('all');
+    bool check = checkData();
+    if (check) {
+      await handler.removeImage(value.image!);
+      await handler.uploadImage(imageFile!);
+      List preFileName = imageFile!.path.split('/');
+      MustEat mustEat = MustEat(
+        seq: value.seq,
+        userId: value.userId,
+        name: nameController.text.trim(),
+        address: addressController.text.trim(),
+        longtitude: double.parse(longitudeController.text.trim()),
+        latitude: double.parse(latitudeController.text.trim()),
+        review: reviewController.text.trim(),
+        rankPoint: double.parse(estimateController.text.trim()),
+        image: preFileName[preFileName.length - 1],
+      );
+      await handler.updateJSONDataAll(mustEat);
+      Get.back();
+    }
+    setState(() {});
   }
 
-  _showDialog() {
-    Get.defaultDialog(
-      title: '수정 결과',
-      middleText: '수정이 완료되었습니다.',
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      barrierDismissible: false,
-      actions: [
-        TextButton(
-          onPressed: () {
-            Get.back(result: true);
-            Get.back();
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    );
+  checkData() {
+    nameError = nameController.text.trim().isEmpty ? '맛집 이름을 입력해주세요' : null;
+    addressError = addressController.text.trim().isEmpty ? '주소를 입력해주세요' : null;
+    latError = latitudeController.text.trim().isEmpty ? '위도를 입력해주세요' : null;
+    longError = longitudeController.text.trim().isEmpty ? '경도를 입력해주세요' : null;
+    reviewError = reviewController.text.trim().isEmpty ? '리뷰를 입력해주세요' : null;
+    ratingError = estimateController.text.trim().isEmpty ? '점수를 입력해주세요' : null;
+
+    if (nameError != null ||
+        addressError != null ||
+        latError != null ||
+        longError != null ||
+        reviewError != null ||
+        ratingError != null) {
+      // 입력 실패 빈칸을 채워야함
+      return false;
+    } else {
+      // 입력
+      return true;
+    }
   }
 }
