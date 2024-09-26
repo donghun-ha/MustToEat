@@ -97,6 +97,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(105.0),
               child: ElevatedButton(
                 onPressed: () {
+                  // 로그인 로직
                   Get.to(const FoodieList());
                 },
                 style: ElevatedButton.styleFrom(

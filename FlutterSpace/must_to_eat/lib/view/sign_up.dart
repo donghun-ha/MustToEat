@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:must_to_eat/model/user.dart';
+import 'package:must_to_eat/vm/user_handler.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -21,6 +23,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+
+  UserHandler handler = UserHandler();
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +148,7 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(55.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.back();
+                    signUpAction();
                   },
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size(150, 0),
@@ -161,5 +165,40 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  // --- Function ---
+  signUpAction() async {
+    if (idController.text.trim().isNotEmpty &&
+        passwordController.text.trim().isNotEmpty &&
+        passwordConfrimController.text.trim().isNotEmpty &&
+        nameController.text.trim().isNotEmpty &&
+        phoneController.text.trim().isNotEmpty &&
+        addressController.text.trim().isNotEmpty &&
+        emailController.text.trim().isNotEmpty) {
+      if (passwordController.text.trim() ==
+          passwordConfrimController.text.trim()) {
+        User user = User(
+          id: idController.text.trim(),
+          password: passwordController.text.trim(),
+          name: nameController.text.trim(),
+          phone: phoneController.text.trim(),
+          address: addressController.text.trim(),
+          email: emailController.text.trim(),
+        );
+        bool result = await handler.insertJSONData(user);
+
+        // 회원 가입 성공시 true
+        if (result) {
+          // 알람창
+          print('성공');
+          Get.back();
+        } else {
+          // 실패시
+          // 알람창
+          print('실패');
+        }
+      }
+    }
   }
 }// End
