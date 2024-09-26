@@ -36,10 +36,15 @@ class _FoodieListState extends State<FoodieList> {
     setState(() {
       if (query.isEmpty) {
         getData();
-      } else {
-        // Implement search functionality here
-      }
+      } else {}
     });
+  }
+
+  void _deleteStore(int id) {
+    setState(() {
+      // stores.removeWhere((store) => store['id'] == id);
+    });
+    // 여기에 서버 삭제 로직 추가 예정
   }
 
   @override
@@ -132,7 +137,9 @@ class _FoodieListState extends State<FoodieList> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    // Implement navigation to detail page
+                                    Get.to(() =>
+                                            Detail(storeData: stores[index]))
+                                        ?.then((_) => getData());
                                   },
                                   child: Image.network(
                                     'http://127.0.0.1:8000/must_eat/view/${stores[index].image}',
@@ -154,7 +161,7 @@ class _FoodieListState extends State<FoodieList> {
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: RatingBarIndicator(
                                   rating: stores[index].rankPoint,
-                                  itemBuilder: (context, index) => Icon(
+                                  itemBuilder: (context, _) => Icon(
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
@@ -165,7 +172,9 @@ class _FoodieListState extends State<FoodieList> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  // Implement navigation to edit page
+                                  Get.to(() =>
+                                          EditList(storeData: stores[index]))
+                                      ?.then((_) => getData());
                                 },
                                 child: const Text('Edit'),
                               ),
@@ -176,9 +185,7 @@ class _FoodieListState extends State<FoodieList> {
                             right: 0,
                             child: IconButton(
                               icon: const Icon(Icons.close, color: Colors.red),
-                              onPressed: () {
-                                // Implement delete functionality
-                              },
+                              onPressed: () => _deleteStore(stores[index].id),
                             ),
                           ),
                         ],
