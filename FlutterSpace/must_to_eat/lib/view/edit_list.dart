@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:must_to_eat/model/must_eat.dart';
 
 class EditList extends StatefulWidget {
-  final Map<String, dynamic> storeData;
-
-  const EditList({Key? key, required this.storeData}) : super(key: key);
+  const EditList({super.key});
 
   @override
   State<EditList> createState() => _EditListState();
@@ -15,10 +14,12 @@ class EditList extends StatefulWidget {
 
 class _EditListState extends State<EditList> {
   late TextEditingController nameController;
-  late TextEditingController phoneController;
+  late TextEditingController reviewController;
   late TextEditingController estimateController;
   late TextEditingController latitudeController;
   late TextEditingController longitudeController;
+
+  MustEat value = Get.arguments ?? '__';
 
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
@@ -26,11 +27,14 @@ class _EditListState extends State<EditList> {
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.storeData['name']);
-    phoneController = TextEditingController(text: widget.storeData['phone']);
-    estimateController = TextEditingController(text: widget.storeData['estimate'].toString());
-    latitudeController = TextEditingController(text: widget.storeData['latitude'].toString());
-    longitudeController = TextEditingController(text: widget.storeData['longitude'].toString());
+    nameController = TextEditingController(text: value.name);
+    reviewController = TextEditingController(text: value.review);
+    estimateController = TextEditingController(
+      text: value.rankPoint.toString(),
+    );
+    latitudeController = TextEditingController(text: value.latitude.toString());
+    longitudeController =
+        TextEditingController(text: value.longtitude.toString());
   }
 
   @override
@@ -84,7 +88,7 @@ class _EditListState extends State<EditList> {
                 ),
                 buildLocationFields(),
                 buildTextField('Name', nameController),
-                buildTextField('Phone', phoneController, TextInputType.phone),
+                buildTextField('Review', reviewController, TextInputType.text),
                 buildRatingField('Rating', estimateController),
                 Padding(
                   padding: const EdgeInsets.all(28.0),
@@ -111,14 +115,15 @@ class _EditListState extends State<EditList> {
   Widget _buildImageWidget() {
     if (imageFile != null) {
       return Image.file(File(imageFile!.path));
-    } else if (widget.storeData['image'] != null) {
-      return Image.asset(widget.storeData['image']);
+    } else if (value.image != null) {
+      return Image.asset('images/placeholder.png');
     } else {
       return const Text('No image selected');
     }
   }
 
-  Widget buildTextField(String label, TextEditingController controller, [TextInputType? keyboardType]) {
+  Widget buildTextField(String label, TextEditingController controller,
+      [TextInputType? keyboardType]) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -239,12 +244,12 @@ class _EditListState extends State<EditList> {
   Future updateList() async {
     // 여기에 서버로 데이터를 보내는 로직을 구현할 예정
     // 현재는 임시로 콘솔에 출력만 합니다.
-    print('Updated Name: ${nameController.text}');
-    print('Updated Phone: ${phoneController.text}');
-    print('Updated Rating: ${estimateController.text}');
-    print('Updated Latitude: ${latitudeController.text}');
-    print('Updated Longitude: ${longitudeController.text}');
-    print('Updated Image: ${imageFile?.path ?? "Not changed"}');
+    // print('Updated Name: ${nameController.text}');
+    // print('Updated Phone: ${phoneController.text}');
+    // print('Updated Rating: ${estimateController.text}');
+    // print('Updated Latitude: ${latitudeController.text}');
+    // print('Updated Longitude: ${longitudeController.text}');
+    // print('Updated Image: ${imageFile?.path ?? "Not changed"}');
 
     _showDialog();
   }

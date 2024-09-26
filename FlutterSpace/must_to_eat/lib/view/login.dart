@@ -78,6 +78,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(15.0),
               child: TextField(
                 controller: pwController,
+                obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Password를 입력해주십시오',
                 ),
@@ -128,44 +129,24 @@ class _LoginState extends State<Login> {
     );
   }
 
-    _showDialog() {
-      showDialog(
-        context: context,
-        barrierColor: Colors.white,
-        barrierDismissible: false,
-        builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-              title: const Text('로그인',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold
-              ),
-              ),
-              content: const Text("성공!"),
-              actions: [
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(100, 0, 0, 0),
-                child: ElevatedButton(
-                  onPressed: () => Get.to(const FoodieList()),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))
-                  ),
-                  child: const Text('시작하기',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold
-                  ),),
-                ),
-              ),
-            )
-          ],
-            );
-      },);
+  _showDialog() {
+    Get.defaultDialog(
+      title: '로그인',
+      middleText: '로그인이 완료되었습니다.',
+      backgroundColor: Colors.white,
+      barrierDismissible: false,
+      actions: [
+        TextButton(
+          onPressed: () {
+            idController.text = '';
+            pwController.text = '';
+            Get.back();
+            Get.to(const FoodieList());
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    );
   }
 
   errorSnackBar() {
@@ -174,8 +155,4 @@ class _LoginState extends State<Login> {
         colorText: Theme.of(context).colorScheme.onError,
         backgroundColor: Theme.of(context).colorScheme.error);
   }
-
-
-
-
 } // End

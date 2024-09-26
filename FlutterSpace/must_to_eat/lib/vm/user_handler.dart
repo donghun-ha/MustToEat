@@ -13,7 +13,9 @@ class UserHandler {
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
     var result = dataConvertedJSON['result'];
-    if (result == "Cool") {
+    print(result);
+    print(result.runtimeType);
+    if (result == 'Cool') {
       return true;
     } else {
       return false;

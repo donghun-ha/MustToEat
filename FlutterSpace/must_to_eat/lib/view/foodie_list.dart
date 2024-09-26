@@ -158,10 +158,11 @@ class _FoodieListState extends State<FoodieList> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: RatingBarIndicator(
                                   rating: stores[index].rankPoint,
-                                  itemBuilder: (context, _) => Icon(
+                                  itemBuilder: (context, _) => const Icon(
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
@@ -172,9 +173,11 @@ class _FoodieListState extends State<FoodieList> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Get.to(() =>
-                                          EditList(storeData: stores[index]))
-                                      ?.then((_) => getData());
+                                  Get.to(
+                                    () => const EditList(),
+                                    arguments: stores[index],
+                                  )!
+                                      .then((value) => getData());
                                 },
                                 child: const Text('Edit'),
                               ),
