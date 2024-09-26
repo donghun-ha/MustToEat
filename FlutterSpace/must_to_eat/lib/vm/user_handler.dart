@@ -17,18 +17,40 @@ class UserHandler {
       return false;
     }
   }
-  
+
   loginJSONData(String id, String password) async {
-    var url = Uri.parse(
-      '$defaultUrl/login?id=${id}&password=${password}'
-    );
+    var url = Uri.parse('$defaultUrl/login?id=${id}&password=${password}');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
     print(dataConvertedJSON);
     var result = dataConvertedJSON['available'];
     return result;
-    
-
   }
 
+  updateJSONData(String id, String name, String phone, String address,
+      String email) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/user/update?id=$id&name=$name&phone=$phone&address=$address&email=$email');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+    if (result == 'Cool') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  updatePWJSONData(String id, String password) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/user/updatePW?id=$id&password=$password');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+    if (result == 'Cool') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

@@ -102,6 +102,8 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: passwordController,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'Password를 입력해주십시오',
                   ),
@@ -111,6 +113,8 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: passwordConfrimController,
+                  obscureText: true,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     labelText: 'Password를 확인해주십시오',
                   ),

@@ -103,14 +103,14 @@ class _LoginState extends State<Login> {
               child: ElevatedButton(
                 onPressed: () async {
                   // 로그인 로직
-                  bool checkLogin = await handler.loginJSONData(idController.text.trim(), pwController.text.trim());
+                  bool checkLogin = await handler.loginJSONData(
+                      idController.text.trim(), pwController.text.trim());
                   if (checkLogin) {
                     box.write('must_user_id', idController.text.trim());
                     Get.to(const FoodieList());
                   } else {
                     // 로그인 실패 알람창
                   }
-                  
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(150, 0),
