@@ -93,8 +93,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.fromLTRB(15, 70, 15, 15),
                 child: TextField(
                   controller: idController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'ID를 입력해주십시오',
+                    errorText: idError,
                   ),
                 ),
               ),
@@ -102,8 +103,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: passwordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password를 입력해주십시오',
+                    errorText: passwordError,
                   ),
                 ),
               ),
@@ -111,8 +113,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: passwordConfrimController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Password를 확인해주십시오',
+                    errorText: passwordConfirmError,
                   ),
                 ),
               ),
@@ -120,8 +123,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: '이름을 입력해주십시오',
+                    errorText: nameError,
                   ),
                 ),
               ),
@@ -129,8 +133,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: phoneController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: '전화번호를 입력해주십시오',
+                    errorText: phoneError,
                   ),
                 ),
               ),
@@ -138,8 +143,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: addressController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: '주소를 입력해주십시오',
+                    errorText: addressError,
                   ),
                 ),
               ),
@@ -147,8 +153,9 @@ class _SignUpState extends State<SignUp> {
                 padding: const EdgeInsets.all(15.0),
                 child: TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: '이메일을 입력해주십시오',
+                    errorText: emailError,
                   ),
                 ),
               ),
@@ -177,19 +184,16 @@ class _SignUpState extends State<SignUp> {
 
   // --- Function ---
   signUpAction() async {
-    // idController.text.trim().isNotEmpty &&
-    // passwordController.text.trim().isNotEmpty &&
-    // passwordConfrimController.text.trim().isNotEmpty &&
-    // nameController.text.trim().isNotEmpty &&
-    // phoneController.text.trim().isNotEmpty &&
-    // addressController.text.trim().isNotEmpty &&
-    // emailController.text.trim().isNotEmpty
     if (idController.text.trim().isEmpty) {
       idError = '아이디를 입력해주세요!';
     } else {
-      // 아이디 중복
-
-      // 중복이 아닐때
+      // 아이디 중복 확인  중복이 아닐때
+      if (await handler.idCheck(idController.text.trim())) {
+        idError = null;
+      } else {
+        // 중복일때
+        idError = '이미 사용중인 아이디 입니다!';
+      }
     }
     passwordError =
         passwordController.text.trim().isEmpty ? '비밀번호를 입력해주세요!' : null;
@@ -235,5 +239,7 @@ class _SignUpState extends State<SignUp> {
         print('실패');
       }
     }
+
+    setState(() {});
   }
 } // End

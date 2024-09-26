@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:must_to_eat/view/user.dart';
+import 'package:must_to_eat/vm/list_handler.dart';
 import 'add_list.dart';
 import 'edit_list.dart';
 import 'detail.dart';
@@ -14,46 +15,33 @@ class FoodieList extends StatefulWidget {
 
 class _FoodieListState extends State<FoodieList> {
   final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> stores = [];
+  final ListHandler handler = ListHandler();
+  List<dynamic> stores = [];
 
   @override
   void initState() {
     super.initState();
-    _loadDummyData();
+    getData();
   }
 
-  void _loadDummyData() {
-    stores = List.generate(
-      10,
-      (index) => {
-        'id': index + 1,
-        'name': '맛집 ${index + 1}',
-        'phone': '010-1234-${5670 + index}',
-        'image': 'images/placeholder.png',
-        'latitude': 37.5 + index * 0.01,
-        'longitude': 127.0 + index * 0.01,
-        'rating': (3 + index % 3).toDouble(),
-      },
-    );
+  void getData() async {
+    stores.clear();
+    List<dynamic> temp = await handler.queryJSONData();
+    stores.addAll(temp);
     setState(() {});
   }
 
   void _searchStores(String query) {
     setState(() {
       if (query.isEmpty) {
-        _loadDummyData();
-      } else {
-        stores = stores
-            .where((store) =>
-                store['name'].toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+        getData();
+      } else {}
     });
   }
 
   void _deleteStore(int id) {
     setState(() {
-      stores.removeWhere((store) => store['id'] == id);
+      // stores.removeWhere((store) => store['id'] == id);
     });
     // 여기에 서버 삭제 로직 추가 예정
   }
@@ -146,12 +134,12 @@ class _FoodieListState extends State<FoodieList> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    Get.to(() =>
-                                            Detail(storeData: stores[index]))
-                                        ?.then((_) => _loadDummyData());
+                                    // Get.to(() =>
+                                    //         Detail(storeData: stores[index]))
+                                    //     ?.then((_) => getData());
                                   },
                                   child: Image.asset(
-                                    stores[index]['image'],
+                                    'images/placeholder.png',
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -159,7 +147,7 @@ class _FoodieListState extends State<FoodieList> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  stores[index]['name'],
+                                  stores[index].name,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -170,15 +158,15 @@ class _FoodieListState extends State<FoodieList> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  'Rating: ${stores[index]['rating']}',
+                                  'Rating: ${stores[index].rankPoint}',
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Get.to(() =>
-                                          EditList(storeData: stores[index]))
-                                      ?.then((_) => _loadDummyData());
+                                  // Get.to(() =>
+                                  //         EditList(storeData: stores[index]))
+                                  //     ?.then((_) => getData());
                                 },
                                 child: const Text('Edit'),
                               ),
@@ -188,10 +176,11 @@ class _FoodieListState extends State<FoodieList> {
                             top: 0,
                             right: 0,
                             child: IconButton(
-                              icon: const Icon(Icons.close, color: Colors.red),
-                              onPressed: () =>
-                                  _deleteStore(stores[index]['id']),
-                            ),
+                                icon:
+                                    const Icon(Icons.close, color: Colors.red),
+                                onPressed: () {}
+                                // => _deleteStore(stores[index]['id']),
+                                ),
                           ),
                         ],
                       ),
