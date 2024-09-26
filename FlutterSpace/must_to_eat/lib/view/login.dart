@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// import 'package:get_storage/get_storage.dart';
 import 'package:must_to_eat/view/foodie_list.dart';
 import 'package:must_to_eat/view/sign_up.dart';
 
@@ -18,6 +19,7 @@ class _LoginState extends State<Login> {
   // Property
   TextEditingController idController = TextEditingController();
   TextEditingController pwController = TextEditingController();
+  // final GetStorage box = GetStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +99,7 @@ class _LoginState extends State<Login> {
               padding: const EdgeInsets.all(105.0),
               child: ElevatedButton(
                 onPressed: () {
+                  // box.write("must_user_id", 'root');
                   Get.to(const FoodieList());
                 },
                 style: ElevatedButton.styleFrom(
