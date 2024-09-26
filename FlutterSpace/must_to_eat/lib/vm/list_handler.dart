@@ -9,7 +9,6 @@ class ListHandler {
   final GetStorage box = GetStorage();
 
   Future<List<dynamic>> queryJSONData(String search) async {
-    var url = Uri.parse(
         '$defaultUrl/select?user_id=${box.read('must_user_id')}&search=$search');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
@@ -57,17 +56,43 @@ class ListHandler {
     }
   }
 
-  deleteJSONData(MustEat mustEat) async {
-    var url = Uri.parse('$defaultUrl/delete?seq=${mustEat.seq}');
+  // 이미지 변경 x
+  updateJSONData(MustEat mustEat) async {
+    print(mustEat.name);
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/must_eat/update?seq=${mustEat.seq}&user_id=${mustEat.userId}&name=${mustEat.name}&address=${mustEat.address}&longtitude=${mustEat.longtitude}&latitude=${mustEat.latitude}&review=${mustEat.review}&rank_point=${mustEat.rankPoint}');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+
+    if (result == "OK") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // 이미지 변경 o
+  updateJSONDataAll(MustEat mustEat) async {
+    var url = Uri.parse(
+        'http://127.0.0.1:8000/must_eat/updateAll?seq=${mustEat.seq}&user_id=${mustEat.userId}&name=${mustEat.name}&address=${mustEat.address}&longtitude=${mustEat.longtitude}&latitude=${mustEat.latitude}&image=${mustEat.image}&review=${mustEat.review}&rank_point=${mustEat.rankPoint}');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
     var result = dataConvertedJSON['result'];
     if (result == "OK") {
-      //
-      print('succescsc');
+      return true;
     } else {
-      //
-      print('falseqqq');
+      return false;
+    }
+  }
+
+  removeImage(String fileName) async {
+    final response = await http.delete(
+        Uri.parse('http://127.0.0.1:8000/must_eat/deleteFile/$fileName'));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
