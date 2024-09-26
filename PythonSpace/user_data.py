@@ -153,7 +153,7 @@ async def select(id: str=None) :
 
     sql = 'select id, password, name, phone, address, email, image from user where id=%s'
     curs.execute(sql, (id))
-    rows = curs.fetchall()
+    rows = curs.fetchone()
     conn.close()
     print(rows)
 

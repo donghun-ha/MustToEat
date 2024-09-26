@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:must_to_eat/view/user_edit.dart';
 import 'package:must_to_eat/view/user_password_edit.dart';
+import 'package:must_to_eat/vm/user_handler.dart';
 
 class User extends StatefulWidget {
   const User({super.key});
@@ -17,6 +18,10 @@ class _UserState extends State<User> {
   // Property
   XFile? imageFile;
   final ImagePicker picker = ImagePicker();
+  UserHandler handler = UserHandler();
+  List<dynamic> userData = [];
+
+  
 
   Future<void> getImageFromGallery() async {
     final XFile? pickedFile =
@@ -29,13 +34,29 @@ class _UserState extends State<User> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData()async{
+    userData.clear();
+    List<dynamic> temp = await handler.selectJSONData();
+    userData.addAll(temp);
+    print(userData);
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _userAppBar(context),
       body: Stack(
         children: [
           _backgroundImage(),
-          Center(
+          userData.isEmpty
+          ? const Center(child: CircularProgressIndicator(),)
+          : Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -133,8 +154,8 @@ class _UserState extends State<User> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Name :   이름',
+                  Text(
+                    'Name :   ${userData[2]}',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
@@ -148,34 +169,34 @@ class _UserState extends State<User> {
                 ],
               ),
             ),
-            const Padding(
+             Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
-                    'Phone :  010-2425-5340',
+                    'Phone :  ${userData[3]}',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            const Padding(
+             Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
-                    'Address :   서울시 강남구',
+                    'Address :   ${userData[4]}',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-            const Padding(
+             Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
-                    'E-mail :   musttoeat@naver.com',
+                    'E-mail :   ${userData[5]}',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],

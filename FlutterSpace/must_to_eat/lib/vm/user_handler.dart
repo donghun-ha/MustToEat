@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:must_to_eat/model/user.dart';
 
 class UserHandler {
   final String defaultUrl = "http://127.0.0.1:8000/user";
+  final GetStorage box = GetStorage();
 
   insertJSONData(User user) async {
     var url = Uri.parse(
