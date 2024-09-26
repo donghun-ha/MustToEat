@@ -63,4 +63,13 @@ class UserHandler {
     var result = dataConvertedJSON['result'];
     return result;
   }
+
+  idCheck(String id) async {
+    var url = Uri.parse('$defaultUrl/check_id?id=$id');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['available'];
+    print(result);
+    return result;
+  }
 }
