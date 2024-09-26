@@ -15,9 +15,11 @@ class FoodieList extends StatefulWidget {
 }
 
 class _FoodieListState extends State<FoodieList> {
+  // Property
   final TextEditingController _searchController = TextEditingController();
   final ListHandler handler = ListHandler();
   List<dynamic> stores = [];
+  String search = '';
 
   @override
   void initState() {
@@ -27,7 +29,7 @@ class _FoodieListState extends State<FoodieList> {
 
   void getData() async {
     stores.clear();
-    List<dynamic> temp = await handler.queryJSONData();
+    List<dynamic> temp = await handler.queryJSONData(search);
     stores.addAll(temp);
     setState(() {});
   }
@@ -38,13 +40,6 @@ class _FoodieListState extends State<FoodieList> {
         getData();
       } else {}
     });
-  }
-
-  void _deleteStore(int id) {
-    setState(() {
-      // stores.removeWhere((store) => store['id'] == id);
-    });
-    // 여기에 서버 삭제 로직 추가 예정
   }
 
   @override
@@ -97,7 +92,11 @@ class _FoodieListState extends State<FoodieList> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: _searchController,
-              onChanged: _searchStores,
+              onChanged: (value) {
+                search = value;
+                getData();
+                setState(() {});
+              },
               decoration: const InputDecoration(
                 hintText: 'Search...',
                 border: OutlineInputBorder(),
@@ -194,7 +193,9 @@ class _FoodieListState extends State<FoodieList> {
                                 Icons.close,
                                 color: Colors.black,
                               ),
-                              onPressed: () => _deleteStore(stores[index].id),
+                              onPressed: () async {
+                                // await handler.deleteJSONData();
+                              },
                             ),
                           ),
                         ],
