@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:must_to_eat/view/user.dart';
 import 'add_list.dart';
 import 'edit_list.dart';
 import 'detail.dart';
 import 'package:get/get.dart';
 
 class FoodieList extends StatefulWidget {
-  const FoodieList({super. key}) ;
+  const FoodieList({super.key});
 
   @override
   State<FoodieList> createState() => _FoodieListState();
@@ -60,6 +61,15 @@ class _FoodieListState extends State<FoodieList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Get.to(const AddList()),
+        backgroundColor: const Color(0xffFBB816),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Icon(Icons.add_outlined),
+      ),
       appBar: AppBar(
         title: const Text(
           'Foodie List',
@@ -69,13 +79,15 @@ class _FoodieListState extends State<FoodieList> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Get.to(() => const AddList())?.then((_) => _loadDummyData());
-            },
-            icon: const Icon(
-              Icons.add,
-              color: Color(0xffFF3D00),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: IconButton(
+              onPressed: () {
+                Get.to(() => const User());
+              },
+              icon: const Icon(
+                Icons.person_2_rounded,
+              ),
             ),
           ),
         ],
@@ -134,7 +146,8 @@ class _FoodieListState extends State<FoodieList> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    Get.to(() => Detail(storeData: stores[index]))
+                                    Get.to(() =>
+                                            Detail(storeData: stores[index]))
                                         ?.then((_) => _loadDummyData());
                                   },
                                   child: Image.asset(
@@ -154,7 +167,8 @@ class _FoodieListState extends State<FoodieList> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
                                   'Rating: ${stores[index]['rating']}',
                                   style: const TextStyle(fontSize: 14),
@@ -162,7 +176,8 @@ class _FoodieListState extends State<FoodieList> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Get.to(() => EditList(storeData: stores[index]))
+                                  Get.to(() =>
+                                          EditList(storeData: stores[index]))
                                       ?.then((_) => _loadDummyData());
                                 },
                                 child: const Text('Edit'),
@@ -174,7 +189,8 @@ class _FoodieListState extends State<FoodieList> {
                             right: 0,
                             child: IconButton(
                               icon: const Icon(Icons.close, color: Colors.red),
-                              onPressed: () => _deleteStore(stores[index]['id']),
+                              onPressed: () =>
+                                  _deleteStore(stores[index]['id']),
                             ),
                           ),
                         ],
