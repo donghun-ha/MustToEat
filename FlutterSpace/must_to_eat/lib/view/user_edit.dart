@@ -17,10 +17,16 @@ class _UserEditState extends State<UserEdit> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   final GetStorage box = GetStorage();
+  // Get Arguments
+  var value = Get.arguments ?? '___';
 
   @override
   void initState() {
     super.initState();
+    nameController.text = value[1];
+    phoneController.text = value[2];
+    addressController.text = value[3];
+    emailController.text = value[4];
   }
 
   @override
@@ -125,15 +131,10 @@ class _UserEditState extends State<UserEdit> {
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: () async {
-          String id = GetStorage().read('must_user_id');
-          bool isUpdated = await handler.updateJSONData(
-            id,
-            nameController.text.trim(),
-            phoneController.text.trim(),
-            addressController.text.trim(),
-            emailController.text.trim(),
-          );
-          if (isUpdated) {
+          if (nameController.text.isNotEmpty &&
+              phoneController.text.isNotEmpty &&
+              addressController.text.isNotEmpty &&
+              emailController.text.isNotEmpty) {
             _showDialog();
           } else {
             errorSnackBar();
@@ -165,7 +166,15 @@ class _UserEditState extends State<UserEdit> {
           child: const Text('아니오'),
         ),
         TextButton(
-          onPressed: () {
+          onPressed: () async {
+            String id = GetStorage().read('must_user_id');
+            await handler.updateJSONData(
+              id,
+              nameController.text.trim(),
+              phoneController.text.trim(),
+              addressController.text.trim(),
+              emailController.text.trim(),
+            );
             Get.back();
             Get.back();
           },

@@ -21,8 +21,6 @@ class _UserState extends State<User> {
   UserHandler handler = UserHandler();
   List<dynamic> userData = [];
 
-  
-
   Future<void> getImageFromGallery() async {
     final XFile? pickedFile =
         await picker.pickImage(source: ImageSource.gallery);
@@ -39,7 +37,7 @@ class _UserState extends State<User> {
     getData();
   }
 
-  getData()async{
+  getData() async {
     userData.clear();
     List<dynamic> temp = await handler.selectJSONData();
     userData.addAll(temp);
@@ -55,18 +53,20 @@ class _UserState extends State<User> {
         children: [
           _backgroundImage(),
           userData.isEmpty
-          ? const Center(child: CircularProgressIndicator(),)
-          : Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _userImage(),
-                _userInformation(),
-                const SizedBox(height: 250),
-                _userSettings(),
-              ],
-            ),
-          )
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _userImage(),
+                      _userInformation(),
+                      const SizedBox(height: 250),
+                      _userSettings(),
+                    ],
+                  ),
+                )
         ],
       ),
     );
@@ -156,10 +156,18 @@ class _UserState extends State<User> {
                 children: [
                   Text(
                     'Name :   ${userData[2]}',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
-                    onPressed: () => Get.to(const UserEdit()),
+                    onPressed: () => Get.to(() => const UserEdit(), arguments: [
+                      userData[0],
+                      userData[2],
+                      userData[3],
+                      userData[4],
+                      userData[5],
+                    ])!
+                        .then((value) => getData()),
                     child: const Text(
                       '회원정보 수정',
                       style: TextStyle(
@@ -169,35 +177,38 @@ class _UserState extends State<User> {
                 ],
               ),
             ),
-             Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
                     'Phone :  ${userData[3]}',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-             Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
                     'Address :   ${userData[4]}',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
-             Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
                   Text(
                     'E-mail :   ${userData[5]}',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
