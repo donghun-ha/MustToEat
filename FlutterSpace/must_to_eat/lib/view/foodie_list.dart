@@ -136,8 +136,8 @@ class _FoodieListState extends State<FoodieList> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    Get.to(() =>
-                                            Detail(storeData: stores[index]))
+                                    Get.to(() => const Detail(),
+                                            arguments: stores[index])
                                         ?.then((_) => getData());
                                   },
                                   child: ClipRRect(

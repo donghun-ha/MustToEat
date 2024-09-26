@@ -36,12 +36,13 @@ def connect():
 
 # 유저가 가진 맛집 가져오기
 @router.get("/select")
-async def select(user_id: str=None):
+async def select(user_id: str=None, search: str=None):
+    search_sql = '%'+search+'%'
     conn = connect()
     curs = conn.cursor()
 
-    sql = "select * from list where user_id=%s"
-    curs.execute(sql, user_id)
+    sql = "select * from list where user_id=%s and name like %s"
+    curs.execute(sql, (user_id, search_sql))
     rows = curs.fetchall()
     conn.close()
     print(rows)

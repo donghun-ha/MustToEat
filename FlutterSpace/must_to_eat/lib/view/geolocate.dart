@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart' as latlng;
 
@@ -14,6 +15,8 @@ class _GeolocateState extends State<Geolocate> {
   late MapController mapController;
   late double latData; // 위도 데이터
   late double longData; // 경도 데이터
+
+  late Position currentPosition;
 
   @override
   void initState() {
@@ -56,6 +59,8 @@ class _GeolocateState extends State<Geolocate> {
           MarkerLayer(
             markers: [
               Marker(
+                width: 80,
+                height: 80,
                 point: latlng.LatLng(latData, longData),
                 child: const Column(
                   children: [

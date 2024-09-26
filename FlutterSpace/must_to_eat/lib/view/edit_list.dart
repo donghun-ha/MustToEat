@@ -91,7 +91,7 @@ class _EditListState extends State<EditList> {
                     child: const Text('Select Image'),
                   ),
                   const SizedBox(height: 16),
-                  Container(
+                  SizedBox(
                       width: MediaQuery.of(context).size.width,
                       height: 200,
                       child: firstDisp == 0

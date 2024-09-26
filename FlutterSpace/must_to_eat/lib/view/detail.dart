@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:must_to_eat/model/must_eat.dart';
 import 'geolocate.dart';
 import 'package:get/get.dart';
 
-class Detail extends StatelessWidget {
-  final Map<String, dynamic> storeData;
+class Detail extends StatefulWidget {
+  const Detail({super.key});
 
-  const Detail({super.key, required this.storeData});
+  @override
+  State<Detail> createState() => _DetailState();
+}
+
+class _DetailState extends State<Detail> {
+  // Property
+  final MustEat value = Get.arguments ?? "__";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          storeData['name'],
+          value.name,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -35,20 +43,28 @@ class Detail extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 15,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.33,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(storeData['image']),
-                  fit: BoxFit.cover,
+              top: 15,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 300,
+                child: Image.network(
+                  'http://127.0.0.1:8000/must_eat/view/${value.image}',
                 ),
+              )
+              // Container(
+              //   height: MediaQuery.of(context).size.height * 0.33,
+              //   width: double.infinity,
+              //   decoration: BoxDecoration(
+              //     image: DecorationImage(
+              //       image: NetworkImage(
+              //           'http://127.0.0.1:8000/must_eat/view/${value.image}'),
+              //       fit: BoxFit.cover,
+              //     ),
+              //   ),
+              // ),
               ),
-            ),
-          ),
           Positioned(
             bottom: 5,
             child: Container(
@@ -75,7 +91,7 @@ class Detail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      storeData['name'],
+                      value.name,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -83,33 +99,53 @@ class Detail extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Phone: ${storeData['phone']}',
+                      'Address: ${value.address}',
                       style: const TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Estimate: ${storeData['estimate']}',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                    Row(
+                      children: [
+                        Text(
+                          '별점: ',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        RatingBarIndicator(
+                          rating: value.rankPoint,
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          itemCount: 5,
+                          itemSize: 20.0,
+                          direction: Axis.horizontal,
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                     Row(
                       children: [
                         IconButton(
-                            icon: const Icon(
-                              Icons.location_on,
-                            ),
-                            onPressed: () {
-                              Get.to(() => const Geolocate(), arguments: [
-                                storeData['latitude'],
-                                storeData['longitude'],
-                              ]);
-                            },
-                            style: IconButton.styleFrom(
-                              foregroundColor: Colors.red,
-                              iconSize: 40,
-                            )),
+                          icon: const Icon(
+                            Icons.location_on,
+                          ),
+                          onPressed: () {
+                            Get.to(() => const Geolocate(), arguments: [
+                              value.latitude, // lat
+                              value.longtitude, // long
+                            ]);
+                          },
+                          style: IconButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            iconSize: 40,
+                          ),
+                        ),
+                        const Text(
+                          '위치 보러가기',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
                   ],
