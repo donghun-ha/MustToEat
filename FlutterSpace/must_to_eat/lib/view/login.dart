@@ -107,9 +107,9 @@ class _LoginState extends State<Login> {
                       idController.text.trim(), pwController.text.trim());
                   if (checkLogin) {
                     box.write('must_user_id', idController.text.trim());
-                    Get.to(const FoodieList());
+                    _showDialog();
                   } else {
-                    // 로그인 실패 알람창
+                    errorSnackBar();
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -127,4 +127,55 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+
+    _showDialog() {
+      showDialog(
+        context: context,
+        barrierColor: Colors.white,
+        barrierDismissible: false,
+        builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+              title: const Text('로그인',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold
+              ),
+              ),
+              content: const Text("성공!"),
+              actions: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(100, 0, 0, 0),
+                child: ElevatedButton(
+                  onPressed: () => Get.to(const FoodieList()),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))
+                  ),
+                  child: const Text('시작하기',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                  ),),
+                ),
+              ),
+            )
+          ],
+            );
+      },);
+  }
+
+  errorSnackBar() {
+    Get.snackbar("경고", "입력중 문제가 발생 하였습니다.",
+        snackPosition: SnackPosition.TOP,
+        colorText: Theme.of(context).colorScheme.onError,
+        backgroundColor: Theme.of(context).colorScheme.error);
+  }
+
+
+
+
 } // End

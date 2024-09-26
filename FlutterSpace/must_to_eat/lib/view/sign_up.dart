@@ -190,9 +190,11 @@ class _SignUpState extends State<SignUp> {
       // 아이디 중복 확인  중복이 아닐때
       if (await handler.idCheck(idController.text.trim())) {
         idError = null;
+       
       } else {
         // 중복일때
         idError = '이미 사용중인 아이디 입니다!';
+       
       }
     }
     passwordError =
@@ -230,16 +232,64 @@ class _SignUpState extends State<SignUp> {
 
       // 회원 가입 성공시 true
       if (result) {
-        // 알람창
+         _showDialog();
         print('성공');
         Get.back();
       } else {
         // 실패시
-        // 알람창
+        errorSnackBar();
         print('실패');
       }
     }
 
     setState(() {});
   }
+  
+  _showDialog() {
+      showDialog(
+        context: context,
+        barrierColor: Colors.white,
+        barrierDismissible: false,
+        builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+              title: const Text('회원가입성공',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold
+              ),
+              ),
+              content: const Text("회원가입에 성공하셨습니다!"),
+              actions: [
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(100, 0, 0, 0),
+                child: ElevatedButton(
+                  onPressed: () => Get.back(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))
+                  ),
+                  child: const Text('로그인 하기',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold
+                  ),),
+                ),
+              ),
+            )
+          ],
+            );
+      },);
+  }
+
+  errorSnackBar() {
+    Get.snackbar("경고", "입력중 문제가 발생 하였습니다.",
+        snackPosition: SnackPosition.TOP,
+        colorText: Theme.of(context).colorScheme.onError,
+        backgroundColor: Theme.of(context).colorScheme.error);
+  }
+
 } // End
