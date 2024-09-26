@@ -9,6 +9,7 @@ class ListHandler {
   final GetStorage box = GetStorage();
 
   Future<List<dynamic>> queryJSONData(String search) async {
+    var url = Uri.parse(
         '$defaultUrl/select?user_id=${box.read('must_user_id')}&search=$search');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
@@ -44,6 +45,20 @@ class ListHandler {
   insertJSONData(MustEat mustEat) async {
     var url = Uri.parse(
         '$defaultUrl/insert?user_id=${mustEat.userId}&name=${mustEat.name}&address=${mustEat.address}&longtitude=${mustEat.longtitude}&latitude=${mustEat.latitude}&image=${mustEat.image}&review=${mustEat.review}&rank_point=${mustEat.rankPoint}');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+    if (result == "OK") {
+      //
+      print('succescsc');
+    } else {
+      //
+      print('falseqqq');
+    }
+  }
+
+  deleteJSONData(MustEat mustEat) async {
+    var url = Uri.parse('$defaultUrl/delete?seq=${mustEat.seq}');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
     var result = dataConvertedJSON['result'];
