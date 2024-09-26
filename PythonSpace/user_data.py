@@ -40,8 +40,27 @@ async def insert(id: str=None, password: str=None, name: str=None, phone: str=No
         print("Error :", e)
         return {'result' : 'Noo'}
     
-# @router.get("/nsame")
-# async def nsame
+
+@router.get("/check_id")
+async def check_id(id: str=None) :
+    conn = connect()
+    curs = conn.cursor()
+
+    try :
+        sql = "select Count(*) from user where id = %s"
+        curs.execute(sql, (id))
+        result = curs.fetchone()
+        conn.close()
+        
+        if result[0] > 0 :
+            return {"available" : False, "message" : "이미 등록된 ID입니다."}
+        else :
+            return {"available" : True, "message" : "사용가능한 ID입니다."}
+    except Exception as e :
+        conn.close()
+        print("Error:", e)
+        return {"error" : "An error occurred while checking the ID."}
+
     
 @router.get("/update")
 async def update(id: str=None, password: str=None, name: str=None, phone: str=None, address: str=None, email: str=None) :
