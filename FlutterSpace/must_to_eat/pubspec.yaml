@@ -58,6 +58,9 @@ dependencies:
   # 별점
   flutter_rating_bar: ^4.0.1 
 
+  # splash ani
+  lottie: ^3.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
