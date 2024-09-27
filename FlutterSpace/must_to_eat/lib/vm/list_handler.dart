@@ -57,8 +57,8 @@ class ListHandler {
     }
   }
 
-  deleteJSONData(MustEat mustEat) async {
-    var url = Uri.parse('$defaultUrl/delete?seq=${mustEat.seq}');
+  deleteJSONData(int seq) async {
+    var url = Uri.parse('$defaultUrl/delete?seq=$seq');
     var response = await http.get(url);
     var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
     var result = dataConvertedJSON['result'];
