@@ -74,18 +74,22 @@ class _UserState extends State<User> {
         children: [
           _backgroundImage(),
           userData.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(),
+              ? const SingleChildScrollView(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 )
-              : Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _userImage(),
-                      _userInformation(),
-                      const SizedBox(height: 250),
-                      _userSettings(),
-                    ],
+              : SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _userImage(),
+                        _userInformation(),
+                        const SizedBox(height: 250),
+                        _userSettings(),
+                      ],
+                    ),
                   ),
                 )
         ],

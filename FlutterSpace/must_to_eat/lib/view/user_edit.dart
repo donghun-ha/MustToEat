@@ -36,15 +36,17 @@ class _UserEditState extends State<UserEdit> {
       body: Stack(
         children: [
           _backgroundImage(),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 100),
-                _editTextfied(),
-                const SizedBox(height: 200),
-                _editButton(),
-              ],
+          SingleChildScrollView(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 100),
+                  _editTextfied(),
+                  const SizedBox(height: 200),
+                  _editButton(),
+                ],
+              ),
             ),
           )
         ],
