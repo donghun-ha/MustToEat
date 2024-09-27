@@ -28,6 +28,29 @@ class _UserState extends State<User> {
       setState(() {
         imageFile = pickedFile;
       });
+
+      // 이미지 파일을 서버에 업로드
+      var success = await handler.uploadImage(imageFile!);
+      if (success == false) {
+        // 실패
+      } else {
+        await handler.insertUserImage(userData[0], success);
+        if (userData[6] != null) {
+          handler.deleteUserImage(userData[6]);
+        }
+
+        getData();
+      }
+
+      // if (success) {
+      //   // 업로드 성공 시 추가 작업 (예: 사용자 데이터 갱신)
+      //   Get.snackbar('성공', '이미지가 성공적으로 업로드되었습니다.',
+      //       snackPosition: SnackPosition.BOTTOM);
+      // } else {
+      //   // 업로드 실패 시 처리
+      //   Get.snackbar('실패', '이미지 업로드에 실패했습니다.',
+      //       snackPosition: SnackPosition.BOTTOM);
+      // }
     }
   }
 
@@ -110,16 +133,18 @@ class _UserState extends State<User> {
       onTap: getImageFromGallery,
       child: Column(
         children: [
-          if (imageFile != null)
+          if (userData[6] != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
                 radius: 100,
-                backgroundImage: FileImage(
-                  File(
-                    imageFile!.path,
-                  ),
-                ),
+                backgroundImage: NetworkImage(
+                    'http://127.0.0.1:8000/user/view/${userData[6]}'),
+                // FileImage(
+                //   File(
+                //     imageFile!.path,
+                //   ),
+                // ),
               ),
             )
           else
