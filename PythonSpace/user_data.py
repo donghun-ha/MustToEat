@@ -140,7 +140,7 @@ async def upload_file(file:UploadFile=File(...)) :
     try :
         file_path = os.path.join(UPLOAD_FOLDER, file.filename)
         with open(file_path, "wb") as better :
-            shutil.copyfileobj(file.filename, better)
+            shutil.copyfileobj(file.file, better)
         return {'result' : 'Cool'}
     except Exception as e :
         print("Error :", e)
@@ -166,7 +166,7 @@ async def get_file(file_name: str) :
         return FileResponse(path = file_path, filename=file_name)
     return {"result" : 'Noo'}
 
-@router.delete("deleteFile/{file_name}")
+@router.delete("/deleteFile/{file_name}")
 async def delete_file(file_name: str) :
     try :
         file_path = os.path.join(UPLOAD_FOLDER, file_name)
@@ -192,4 +192,19 @@ async def delete(id: str=None) :
         conn.close()
         print('Error :', e)
         return {'results' : 'Error'}
+    
+@router.get("/insertImage")
+async def insertImage(id: str=None, imagePath: str=None):
+    conn = connect()
+    curs = conn.cursor()
 
+    try:
+        sql = "update user set image=%s where id=%s"
+        curs.execute(sql,(imagePath, id))
+        conn.commit()
+        conn.close()
+        return {'result' : 'Cool'}
+    except Exception as e : 
+        conn.close()
+        print("Error :", e)
+        return {'result' : 'Noo'}

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:must_to_eat/model/user.dart';
 
 class UserHandler {
@@ -73,5 +74,56 @@ class UserHandler {
     var result = dataConvertedJSON['available'];
     print(result);
     return result;
+  }
+
+  uploadImage(XFile imageFile) async {
+    String filename = '';
+    // 파일 전송
+    var requset = http.MultipartRequest(
+      "POST",
+      Uri.parse("$defaultUrl/upload"),
+    );
+    var multipartFile =
+        await http.MultipartFile.fromPath('file', imageFile.path);
+    requset.files.add(multipartFile);
+
+    // for getting file name
+    List preFileName = imageFile.path.split('/');
+    filename = preFileName[preFileName.length - 1];
+
+    var response = await requset.send();
+
+    // 200 번은 성공
+    if (response.statusCode == 200) {
+      return filename;
+    } else {
+      return false;
+    }
+  }
+
+  insertUserImage(String id, String imagePath) async {
+    var url = Uri.parse('$defaultUrl/insertImage?id=$id&imagePath=$imagePath');
+    var response = await http.get(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+    print(result);
+    print(result.runtimeType);
+    if (result == 'Cool') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  deleteUserImage(String filename) async {
+    var url = Uri.parse('$defaultUrl/deleteFile/$filename');
+    var response = await http.delete(url);
+    var dataConvertedJSON = json.decode(utf8.decode(response.bodyBytes));
+    var result = dataConvertedJSON['result'];
+    if (result == "OK") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
