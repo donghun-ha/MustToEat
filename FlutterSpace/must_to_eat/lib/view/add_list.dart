@@ -82,6 +82,7 @@ class _AddListState extends State<AddList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false, // 키보드 올라와도 레이아웃이 변경되지 않도록 설정
       appBar: AppBar(
         title: const Text('Add Restaurant',
             style: TextStyle(fontWeight: FontWeight.bold)),
@@ -92,50 +93,61 @@ class _AddListState extends State<AddList> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset('images/back.png', fit: BoxFit.cover),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton(
-                    onPressed: getImageFromGallery,
-                    child: const Text('Select Image'),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset('images/back.png', fit: BoxFit.cover),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: getImageFromGallery,
+                  child: const Text('Select Image'),
+                ),
+                const SizedBox(height: 16),
+                if (imageFile != null)
+                  Image.file(
+                    File(imageFile!.path),
+                    height: 200,
+                  )
+                else
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    child: const Center(
+                        child: Text(
+                      '이미지를 선택하세요!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    )),
                   ),
-                  const SizedBox(height: 16),
-                  if (imageFile != null)
-                    Image.file(File(imageFile!.path),
-                        height: 200, fit: BoxFit.cover)
-                  else
-                    const Text('No image selected'),
-                  const SizedBox(height: 16),
-                  buildTextField('Name', nameController,
-                      'Enter restaurant name', nameError),
-                  buildTextField('Address', addressController, 'Address',
-                      addressError, TextInputType.text),
-                  buildTextField('Latitude', latitudeController, 'Latitude',
-                      latError, TextInputType.number),
-                  buildTextField('Longitude', longitudeController, 'Longitude',
-                      longError, TextInputType.number),
-                  buildTextField('review', reviewController, 'review',
-                      reviewError, TextInputType.text),
-                  buildTextField('Rating', estimateController,
-                      'Enter rating (0-5)', ratingError, TextInputType.number),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => insertAction(),
-                    child: const Text('Add Restaurant'),
-                  ),
-                ],
-              ),
+                const SizedBox(height: 16),
+                buildTextField(
+                    'Name', nameController, 'Enter restaurant name', nameError),
+                buildTextField('Address', addressController, 'Address',
+                    addressError, TextInputType.text),
+                buildTextField('Latitude', latitudeController, 'Latitude',
+                    latError, TextInputType.number),
+                buildTextField('Longitude', longitudeController, 'Longitude',
+                    longError, TextInputType.number),
+                buildTextField('review', reviewController, 'review',
+                    reviewError, TextInputType.text),
+                buildTextField('Rating', estimateController,
+                    'Enter rating (0-5)', ratingError, TextInputType.number),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => insertAction(),
+                  child: const Text('Add Restaurant'),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -181,7 +193,7 @@ class _AddListState extends State<AddList> {
         //
         print('이미지 선택 알람');
       } else {
-        var result = await handler.uploadImage(imageFile!);
+        result = await handler.uploadImage(imageFile!);
         // address에 올리기
         MustEat mustEat = MustEat(
           userId: box.read('must_user_id'),

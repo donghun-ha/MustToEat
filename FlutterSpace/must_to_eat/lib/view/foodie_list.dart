@@ -34,7 +34,7 @@ class _FoodieListState extends State<FoodieList> {
     setState(() {});
   }
 
-  void _searchStores(String query) {
+  void searchStores(String query) {
     setState(() {
       if (query.isEmpty) {
         getData();
@@ -195,6 +195,7 @@ class _FoodieListState extends State<FoodieList> {
                               ),
                               onPressed: () async {
                                 await handler.deleteJSONData(stores[index].seq);
+                                handler.removeImage(stores[index].image);
                                 setState(() {
                                   getData();
                                 });
