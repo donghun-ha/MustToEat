@@ -63,8 +63,8 @@ class _AddListState extends State<AddList> {
       });
     } catch (e) {
       print("위치 정보를 가져올 수 없습니다: $e");
-      latData = 37.5665;
-      longData = 126.9780;
+      // latData = 37.5665;
+      // longData = 126.9780;
       latitudeController.text = latData.toString();
       longitudeController.text = longData.toString();
     }
@@ -143,6 +143,8 @@ class _AddListState extends State<AddList> {
                           if (returnLatLong != null) {
                             latData = returnLatLong[0];
                             longData = returnLatLong[1];
+                            latitudeController.text = latData.toString();
+                            longitudeController.text = longData.toString();
                           }
                           setState(() {});
                         },

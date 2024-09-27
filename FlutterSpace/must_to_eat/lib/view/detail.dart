@@ -104,6 +104,12 @@ class _DetailState extends State<Detail> {
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
+                    Text(
+                      '${value.review}',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Text(

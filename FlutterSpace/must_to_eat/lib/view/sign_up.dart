@@ -140,6 +140,7 @@ class _SignUpState extends State<SignUp> {
                     labelText: '전화번호를 입력해주십시오',
                     errorText: phoneError,
                   ),
+                  keyboardType: TextInputType.phone,
                 ),
               ),
               Padding(
