@@ -161,7 +161,36 @@ class _FoodieListState extends State<FoodieList> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Get.to(
+                                      () => const EditList(),
+                                      arguments: stores[index],
+                                    )!
+                                        .then((value) => getData());
+                                  },
+                                  child: const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.edit,
+                                        color: Colors.green,
+                                        size: 18,
+                                      ),
+                                      Text(
+                                        ' 수정',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
                                 child: RatingBarIndicator(
                                   rating: stores[index].rankPoint,
                                   itemBuilder: (context, _) => const Icon(
@@ -173,16 +202,16 @@ class _FoodieListState extends State<FoodieList> {
                                   direction: Axis.horizontal,
                                 ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Get.to(
-                                    () => const EditList(),
-                                    arguments: stores[index],
-                                  )!
-                                      .then((value) => getData());
-                                },
-                                child: const Text('Edit'),
-                              ),
+                              // TextButton(
+                              //   onPressed: () {
+                              //     Get.to(
+                              //       () => const EditList(),
+                              //       arguments: stores[index],
+                              //     )!
+                              //         .then((value) => getData());
+                              //   },
+                              //   child: const Text('Edit'),
+                              // ),
                             ],
                           ),
                           Positioned(
