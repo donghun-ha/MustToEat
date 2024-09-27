@@ -82,117 +82,124 @@ class _AddListState extends State<AddList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false, // 키보드 올라와도 레이아웃이 변경되지 않도록 설정
-      appBar: AppBar(
-        title: const Text('Add Restaurant',
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('images/back.png'), fit: BoxFit.cover),
-          ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset('images/back.png', fit: BoxFit.cover),
-          ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton(
-                    onPressed: getImageFromGallery,
-                    child: const Text('Select Image'),
-                  ),
-                  const SizedBox(height: 16),
-                  if (imageFile != null)
-                    Image.file(
-                      File(imageFile!.path),
-                      height: 200,
-                    )
-                  else
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 200,
-                      child: const Center(
-                          child: Text(
-                        '이미지를 선택하세요!',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
-                      )),
-                    ),
-                  const SizedBox(height: 16),
-                  buildTextField('Name', nameController,
-                      'Enter restaurant name', nameError),
-                  buildTextField('Address', addressController, 'Address',
-                      addressError, TextInputType.text),
-                  Row(
-                    children: [
-                      TextButton.icon(
-                        onPressed: () async {
-                          var returnLatLong = await Get.to(
-                              () => const LocationPicker(),
-                              arguments: [latData, longData]);
-                          if (returnLatLong != null) {
-                            latData = returnLatLong[0];
-                            longData = returnLatLong[1];
-                            latitudeController.text = latData.toString();
-                            longitudeController.text = longData.toString();
-                          }
-                          setState(() {});
-                        },
-                        label: const Text('위치 변경'),
-                        icon: const Icon(Icons.location_on_rounded),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: TextField(
-                      controller: latitudeController,
-                      keyboardType: TextInputType.number,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                          labelText: 'Latitude',
-                          hintText: 'Latitude',
-                          border: const OutlineInputBorder(),
-                          errorText: latError),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: TextField(
-                      controller: longitudeController,
-                      keyboardType: TextInputType.number,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                          labelText: 'Longitude',
-                          hintText: 'Longitude',
-                          border: const OutlineInputBorder(),
-                          errorText: longError),
-                    ),
-                  ),
-                  buildTextField('review', reviewController, 'review',
-                      reviewError, TextInputType.text),
-                  buildTextField('Rating', estimateController,
-                      'Enter rating (0-5)', ratingError, TextInputType.number),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => insertAction(),
-                    child: const Text('Add Restaurant'),
-                  ),
-                ],
-              ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        // resizeToAvoidBottomInset: false, // 키보드 올라와도 레이아웃이 변경되지 않도록 설정
+        appBar: AppBar(
+          title: const Text('Add Restaurant',
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('images/back.png'), fit: BoxFit.cover),
             ),
           ),
-        ],
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset('images/back.png', fit: BoxFit.cover),
+            ),
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ElevatedButton(
+                      onPressed: getImageFromGallery,
+                      child: const Text('Select Image'),
+                    ),
+                    const SizedBox(height: 16),
+                    if (imageFile != null)
+                      Image.file(
+                        File(imageFile!.path),
+                        height: 200,
+                      )
+                    else
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 200,
+                        child: const Center(
+                            child: Text(
+                          '이미지를 선택하세요!',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                          ),
+                        )),
+                      ),
+                    const SizedBox(height: 16),
+                    buildTextField('Name', nameController,
+                        'Enter restaurant name', nameError),
+                    buildTextField('Address', addressController, 'Address',
+                        addressError, TextInputType.text),
+                    Row(
+                      children: [
+                        TextButton.icon(
+                          onPressed: () async {
+                            var returnLatLong = await Get.to(
+                                () => const LocationPicker(),
+                                arguments: [latData, longData]);
+                            if (returnLatLong != null) {
+                              latData = returnLatLong[0];
+                              longData = returnLatLong[1];
+                              latitudeController.text = latData.toString();
+                              longitudeController.text = longData.toString();
+                            }
+                            setState(() {});
+                          },
+                          label: const Text('위치 변경'),
+                          icon: const Icon(Icons.location_on_rounded),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: TextField(
+                        controller: latitudeController,
+                        keyboardType: TextInputType.number,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                            labelText: 'Latitude',
+                            hintText: 'Latitude',
+                            border: const OutlineInputBorder(),
+                            errorText: latError),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: TextField(
+                        controller: longitudeController,
+                        keyboardType: TextInputType.number,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                            labelText: 'Longitude',
+                            hintText: 'Longitude',
+                            border: const OutlineInputBorder(),
+                            errorText: longError),
+                      ),
+                    ),
+                    buildTextField('review', reviewController, 'review',
+                        reviewError, TextInputType.text),
+                    buildTextField(
+                        'Rating',
+                        estimateController,
+                        'Enter rating (0-5)',
+                        ratingError,
+                        TextInputType.number),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => insertAction(),
+                      child: const Text('Add Restaurant'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

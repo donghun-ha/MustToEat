@@ -23,6 +23,7 @@ class _UserPasswordEditState extends State<UserPasswordEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: _appBar(context),
       body: Stack(
         children: [

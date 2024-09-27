@@ -63,35 +63,37 @@ class _LocationPickerState extends State<LocationPicker> {
         automaticallyImplyLeading: false,
       ),
       body: canRun
-          ? Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => Get.back(),
-                      child: const Text('취소'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        latData = currentPosition.latitude;
-                        longData = currentPosition.longitude;
-                        setState(() {});
-                      },
-                      child: const Text('내 위치'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => Get.back(result: [latData, longData]),
-                      child: const Text('선택'),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 1.3,
-                  child: flutterMap(),
-                ),
-              ],
+          ? SingleChildScrollView(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => Get.back(),
+                        child: const Text('취소'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          latData = currentPosition.latitude;
+                          longData = currentPosition.longitude;
+                          setState(() {});
+                        },
+                        child: const Text('내 위치'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Get.back(result: [latData, longData]),
+                        child: const Text('선택'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 1.3,
+                    child: flutterMap(),
+                  ),
+                ],
+              ),
             )
           : const Center(
               child: CircularProgressIndicator(),
