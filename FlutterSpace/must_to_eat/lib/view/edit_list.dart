@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:must_to_eat/model/must_eat.dart';
+import 'package:must_to_eat/view/location_picker.dart';
 import 'package:must_to_eat/vm/list_handler.dart';
 
 class EditList extends StatefulWidget {
@@ -103,10 +104,52 @@ class _EditListState extends State<EditList> {
                       'Enter restaurant name', nameError),
                   buildTextField('Address', addressController, 'Address',
                       addressError, TextInputType.text),
-                  buildTextField('Latitude', latitudeController, 'Latitude',
-                      latError, TextInputType.number),
-                  buildTextField('Longitude', longitudeController, 'Longitude',
-                      longError, TextInputType.number),
+                  Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () async {
+                          var returnLatLong = await Get.to(
+                              () => const LocationPicker(),
+                              arguments: [value.latitude, value.longtitude]);
+                          if (returnLatLong != null) {
+                            latitudeController.text =
+                                returnLatLong[0].toString();
+                            longitudeController.text =
+                                returnLatLong[1].toString();
+                          }
+                          setState(() {});
+                        },
+                        label: const Text('위치 변경'),
+                        icon: const Icon(Icons.location_on_rounded),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: TextField(
+                      controller: latitudeController,
+                      keyboardType: TextInputType.number,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          labelText: 'Latitude',
+                          hintText: 'Latitude',
+                          border: const OutlineInputBorder(),
+                          errorText: latError),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: TextField(
+                      controller: longitudeController,
+                      keyboardType: TextInputType.number,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          labelText: 'Longitude',
+                          hintText: 'Longitude',
+                          border: const OutlineInputBorder(),
+                          errorText: longError),
+                    ),
+                  ),
                   buildTextField('review', reviewController, 'review',
                       reviewError, TextInputType.text),
                   buildTextField('Rating', estimateController,

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:must_to_eat/model/must_eat.dart';
+import 'package:must_to_eat/view/location_picker.dart';
 import 'package:must_to_eat/vm/list_handler.dart';
 
 class AddList extends StatefulWidget {
@@ -98,53 +99,95 @@ class _AddListState extends State<AddList> {
           Positioned.fill(
             child: Image.asset('images/back.png', fit: BoxFit.cover),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ElevatedButton(
-                  onPressed: getImageFromGallery,
-                  child: const Text('Select Image'),
-                ),
-                const SizedBox(height: 16),
-                if (imageFile != null)
-                  Image.file(
-                    File(imageFile!.path),
-                    height: 200,
-                  )
-                else
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    child: const Center(
-                        child: Text(
-                      '이미지를 선택하세요!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                      ),
-                    )),
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton(
+                    onPressed: getImageFromGallery,
+                    child: const Text('Select Image'),
                   ),
-                const SizedBox(height: 16),
-                buildTextField(
-                    'Name', nameController, 'Enter restaurant name', nameError),
-                buildTextField('Address', addressController, 'Address',
-                    addressError, TextInputType.text),
-                buildTextField('Latitude', latitudeController, 'Latitude',
-                    latError, TextInputType.number),
-                buildTextField('Longitude', longitudeController, 'Longitude',
-                    longError, TextInputType.number),
-                buildTextField('review', reviewController, 'review',
-                    reviewError, TextInputType.text),
-                buildTextField('Rating', estimateController,
-                    'Enter rating (0-5)', ratingError, TextInputType.number),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () => insertAction(),
-                  child: const Text('Add Restaurant'),
-                ),
-              ],
+                  const SizedBox(height: 16),
+                  if (imageFile != null)
+                    Image.file(
+                      File(imageFile!.path),
+                      height: 200,
+                    )
+                  else
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      child: const Center(
+                          child: Text(
+                        '이미지를 선택하세요!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      )),
+                    ),
+                  const SizedBox(height: 16),
+                  buildTextField('Name', nameController,
+                      'Enter restaurant name', nameError),
+                  buildTextField('Address', addressController, 'Address',
+                      addressError, TextInputType.text),
+                  Row(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () async {
+                          var returnLatLong = await Get.to(
+                              () => const LocationPicker(),
+                              arguments: [latData, longData]);
+                          if (returnLatLong != null) {
+                            latData = returnLatLong[0];
+                            longData = returnLatLong[1];
+                          }
+                          setState(() {});
+                        },
+                        label: const Text('위치 변경'),
+                        icon: const Icon(Icons.location_on_rounded),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: TextField(
+                      controller: latitudeController,
+                      keyboardType: TextInputType.number,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          labelText: 'Latitude',
+                          hintText: 'Latitude',
+                          border: const OutlineInputBorder(),
+                          errorText: latError),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: TextField(
+                      controller: longitudeController,
+                      keyboardType: TextInputType.number,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          labelText: 'Longitude',
+                          hintText: 'Longitude',
+                          border: const OutlineInputBorder(),
+                          errorText: longError),
+                    ),
+                  ),
+                  buildTextField('review', reviewController, 'review',
+                      reviewError, TextInputType.text),
+                  buildTextField('Rating', estimateController,
+                      'Enter rating (0-5)', ratingError, TextInputType.number),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => insertAction(),
+                    child: const Text('Add Restaurant'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
