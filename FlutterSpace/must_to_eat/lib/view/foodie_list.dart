@@ -194,7 +194,10 @@ class _FoodieListState extends State<FoodieList> {
                                 color: Colors.black,
                               ),
                               onPressed: () async {
-                                // await handler.deleteJSONData();
+                                await handler.deleteJSONData(stores[index].seq);
+                                setState(() {
+                                  getData();
+                                });
                               },
                             ),
                           ),
